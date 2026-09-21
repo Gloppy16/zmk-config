@@ -57,6 +57,7 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
+        reg = <0>;
     };
 
     /* 12x SK6812MINI-E [25][42] */
