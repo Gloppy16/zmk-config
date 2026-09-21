@@ -1,0 +1,13 @@
+file_format: "1"
+id: cocot46plus
+name: cocot46plus
+type: shield
+url: https://github.com/aki27kbd/cocot46plus/
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - encoder
+  - underglow
+  - pointer
+  - display

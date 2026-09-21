@@ -1,14 +1,21 @@
 manifest:
-  defaults:
-    revision: v0.3
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    # Additional modules containing boards/shields/custom code can be listed here as well
-    # See https://docs.zephyrproject.org/3.2.0/develop/west/manifest.html#projects
+    - name: maaao
+      url-base: https://github.com/maaao
+    - name: msfmfjt
+      url-base: https://github.com/msfmfjt
   projects:
     - name: zmk
       remote: zmkfirmware
+      revision: main
       import: app/west.yml
+    - name: zmk-duplex-matrix-driver
+      remote: maaao
+      revision: master
+    - name: zmk-adns5050-driver
+      remote: msfmfjt
+      revision: main
   self:
     path: config

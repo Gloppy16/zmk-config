@@ -1,0 +1,12 @@
+if SHIELD_COCOT46PLUS
+
+config ZMK_KEYBOARD_NAME
+    default "cocot46plus"
+
+# Optional: keep QMK's USB identity (VIA will NOT work with ZMK either way)
+# config USB_DEVICE_VID
+#	default 0x1727
+# config USB_DEVICE_PID
+#	default 0x0003
+
+endif
