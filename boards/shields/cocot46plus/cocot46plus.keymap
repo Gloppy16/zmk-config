@@ -51,20 +51,5 @@
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
-        trackball_layer {
-            display-name = "Trackball";
-            bindings = <
-                &none    &none &none &none &none &none            &none &none &none &none &none &none
-                &none    &none &rgb_ug RGB_BRI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_EFF
-                                                          &none &none &none &none &none &none
-                &none    &none &rgb_ug RGB_BRD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_EFF_RBG
-                                                          &none &none &none &none &none &none
-                &kp LGUI &mt LALT DEL &trans &kp SPACE &mkp LCLK    &mkp RCLK &kp ENTER &lt RAISE INT4 &kp BSPC &kp ESC
-            >;
-            /* QMK's SCRL_TO/CPI_SW/SCRL_SW/ROT_L15/ROT_R15/SCRL_IN keycodes have no
-               direct ZMK equivalents — scroll mode is handled by the driver's
-               scroll-layers property; CPI etc. are set in the overlay */
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
-        };
     };
 };
