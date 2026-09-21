@@ -41,25 +41,6 @@
         b-gpios = <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
     };
 
-#    /* ADNS-5050 trackball, bit-banged like QMK [27][31][56] */
-#    trackball: trackball {
-#        compatible = "pixart,adns5050";
-#        sclk-gpios = <&pro_micro 16 GPIO_ACTIVE_HIGH>;  /* B2 */
-#        sdio-gpios = <&pro_micro 8  GPIO_ACTIVE_HIGH>;  /* B4 */
-#        cs-gpios   = <&pro_micro 9  GPIO_ACTIVE_LOW>;   /* B5 */
-#        cpi = <500>;
-#        invert-x;   /* QMK: POINTING_DEVICE_ROTATION_180 */
-#        invert-y;
-#        scroll-layers = <1 2>;   /* scroll on LOWER/RAISE, like QMK default */
-#        /* automouse-layer = <3>; */
-#    };
-#
-#    trackball_listener {
-#        compatible = "zmk,input-listener";
-#        device = <&trackball>;
-#        reg = <0>;
-#    };
-
     /* 12x SK6812MINI-E [25][42] */
     led_strip: ws2812 {
         compatible = "worldsemi,ws2812-gpio";
