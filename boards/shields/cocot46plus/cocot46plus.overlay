@@ -65,7 +65,7 @@
         compatible = "worldsemi,ws2812-gpio";
         chain-length = <12>;
         pin-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH)>;   /* B6 */
-        color-mapping = <LED_COLOR_ID_GRB LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+        color-mapping = <LED_COLOR_ID_GRB>;
     };
 
     /* 46 physical keys. Dummy QMK positions ([3,4] encoder slot, [4,2]/[4,4],
