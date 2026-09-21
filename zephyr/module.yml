@@ -1,4 +1,5 @@
+name: zmk-keyboard-cocot46plus
+
 build:
-  name: zmk-keyboard-cocot46plus
   settings:
     board_root: .
