@@ -33,22 +33,30 @@
         /* poll-period-ms = <10>;  lower it if you want snappier response */
     };
 
-    /* EC12-compatible encoder, QMK pins D3/D2 [42] */
+    /* EC12-compatible encoder, QMK pins D3/D2 (aki27kbd fork keyboard.json:
+       pin_a D3, pin_b D2). D3 = pro_micro 3 = P0.20, D2 = pro_micro 2 =
+       P0.17. NOTE: D1/D0 (pro_micro 1/0 = P0.06/P0.08) are the OLED I2C
+       pads (SDA/SCL) and must NOT be used here - Attempts <=33 wired the
+       encoder onto the I2C pins, colliding with the i2c0 re-route below. */
     encoder_0: encoder_0 {
         compatible = "alps,ec11";
         resolution = <4>;
-        a-gpios = <&pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D3 */
-        b-gpios = <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
+        a-gpios = <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D3 */
+        b-gpios = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
     };
 
-    /* ADNS-5050 trackball sensor, bit-banged 3-wire (SCLK=B2/P0.10,
-       SDIO=B4/P1.04, CS=B5/P1.06; no MOTION pin, driver polls at 125 Hz).
-       invert-x + invert-y match QMK's POINTING_DEVICE_ROTATION_180. */
+    /* ADNS-5050 trackball sensor, bit-banged 3-wire (Attempt 34 pin
+       verification: QMK aki27kbd fork config.h ADNS5050_SCLK_PIN B2 /
+       SDIO_PIN B4 / CS_PIN B5; AVR PB2/PB4/PB5 = Arduino silk D16/D8/D9;
+       nice!nano arduino_pro_micro_pins.dtsi: 16->gpio0 10 (P0.10),
+       8->gpio1 4 (P1.04), 9->gpio1 6 (P1.06). Index 16 IS in the map.
+       No MOTION pin, driver polls at 125 Hz. invert-x/y = QMK's
+       POINTING_DEVICE_ROTATION_180. */
     trackball: adns5050 {
         compatible = "pixart,adns5050";
-        sclk-gpios = <&pro_micro 16 GPIO_ACTIVE_HIGH>;   /* B2 */
-        sdio-gpios = <&pro_micro 8  GPIO_ACTIVE_HIGH>;   /* B4 */
-        cs-gpios   = <&pro_micro 9  GPIO_ACTIVE_LOW>;    /* B5 */
+        sclk-gpios = <&pro_micro 16 GPIO_ACTIVE_HIGH>;   /* B2 = P0.10 (NFC1) */
+        sdio-gpios = <&pro_micro 8  GPIO_ACTIVE_HIGH>;   /* B4 = P1.04 */
+        cs-gpios   = <&pro_micro 9  GPIO_ACTIVE_LOW>;    /* B5 = P1.06 */
         cpi = <500>;
         invert-x;
         invert-y;
@@ -91,8 +99,11 @@
     };
 };
 
-/* 12x SK6812MINI-E on B6 (P0.12), driven as SPI3 MOSI — the ws2812-gpio driver
-   is nRF51-only on Zephyr 3.5, so the strip rides the SPIM peripheral [25][42] */
+/* 12x SK6812MINI-E chain on P0.12. CAUTION (Attempt 34 audit): the QMK
+   ground truth for the strip is B6 = PB6 = silk D10 = P0.09 (NFC2 pad).
+   The MSFMFJT ZMK port uses P0.12, but that port describes a DIFFERENT
+   board variant (5 matrix rows), so P0.12 vs P0.09 is UNRESOLVED against
+   this PCB - left unchanged pending bench evidence / coordinator sign-off. */
 &pinctrl {
     spi3_default: spi3_default {
         group1 {
@@ -155,10 +166,13 @@
     };
 };
 
-/* Re-route i2c0 onto the Pro Micro I2C header pins: the board default pinctrl
-   puts TWIM on P0.17/P0.20 (= D2/D3, the encoder pins here). Standard Pro
-   Micro I2C is SDA=D1=P0.06, SCL=D0=P0.08. Node merge overrides only psels,
-   same mechanism the spi3 block above uses. */
+/* OLED rides the Pro Micro I2C header pads: AVR TWI = silk D1/D0
+   (SDA=D1=P0.06, SCL=D0=P0.08), confirmed by SparkFun Pro Micro RP2040
+   (I2C1 on GP2/GP3 = the same D1/D0 pads) carrying upstream cocot46plus
+   OLED on I2C1. The BOARD-default i2c0 pinctrl is P0.17/P0.20 = silk
+   D2/D3 = the ENCODER pins (fixed to 3/2 this attempt), so this re-route
+   is REQUIRED and correct as-is. Node merge overrides only psels, same
+   mechanism the spi3 block above uses. */
 &pinctrl {
     i2c0_default: i2c0_default {
         group1 {

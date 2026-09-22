@@ -21,3 +21,4 @@
 include:
   - board: nice_nano_v2
     shield: cocot46plus
+    snippet: zmk-usb-logging   # Attempt 34: USB CDC ACM serial console for bench debug
