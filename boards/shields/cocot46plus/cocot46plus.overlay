@@ -41,6 +41,25 @@
         b-gpios = <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
     };
 
+    /* ADNS-5050 trackball sensor, bit-banged 3-wire (SCLK=B2/P0.10,
+       SDIO=B4/P1.04, CS=B5/P1.06; no MOTION pin, driver polls at 125 Hz).
+       invert-x + invert-y match QMK's POINTING_DEVICE_ROTATION_180. */
+    trackball: adns5050 {
+        compatible = "pixart,adns5050";
+        sclk-gpios = <&pro_micro 16 GPIO_ACTIVE_HIGH>;   /* B2 */
+        sdio-gpios = <&pro_micro 8  GPIO_ACTIVE_HIGH>;   /* B4 */
+        cs-gpios   = <&pro_micro 9  GPIO_ACTIVE_LOW>;    /* B5 */
+        cpi = <500>;
+        invert-x;
+        invert-y;
+        scroll-layers = <1 2>;  /* LOWER, RAISE */
+    };
+
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+    };
+
     /* 46 physical keys. Dummy QMK positions ([3,4] encoder slot, [4,2]/[4,4],
        [8,4]/[9,2]/[9,5]) have no switches and rows 4/9 are NO_PIN, so they're
        dropped here [42][39] */

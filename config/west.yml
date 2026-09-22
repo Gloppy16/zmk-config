@@ -15,7 +15,7 @@ manifest:
       remote: maaao
       revision: master
     - name: zmk-adns5050-driver
-      remote: msfmfjt
-      revision: main
+      url: https://github.com/Gloppy16/zmk-adns5050-driver
+      revision: 5e2fc96
   self:
     path: config
