@@ -74,6 +74,7 @@
     };
 
     chosen {
+        zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
     };
 };
