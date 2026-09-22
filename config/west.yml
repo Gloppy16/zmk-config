@@ -16,6 +16,6 @@ manifest:
       revision: master
     - name: zmk-adns5050-driver
       url: https://github.com/Gloppy16/zmk-adns5050-driver
-      revision: 664d9a9
+      revision: ee9651f
   self:
     path: config
