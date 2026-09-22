@@ -41,14 +41,6 @@
         b-gpios = <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
     };
 
-    /* 12x SK6812MINI-E [25][42] */
-    led_strip: ws2812 {
-        compatible = "worldsemi,ws2812-gpio";
-        chain-length = <12>;
-        in-gpios = <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  /* B6 */
-        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-    };
-
     /* 46 physical keys. Dummy QMK positions ([3,4] encoder slot, [4,2]/[4,4],
        [8,4]/[9,2]/[9,5]) have no switches and rows 4/9 are NO_PIN, so they're
        dropped here [42][39] */
@@ -76,6 +68,47 @@
     chosen {
         zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
+    };
+};
+
+/* 12x SK6812MINI-E on B6 (P0.12), driven as SPI3 MOSI — the ws2812-gpio driver
+   is nRF51-only on Zephyr 3.5, so the strip rides the SPIM peripheral [25][42] */
+&pinctrl {
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 12)>;   /* B6 */
+        };
+    };
+
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 12)>;   /* B6 */
+            low-power-enable;
+        };
+    };
+};
+
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+
+        /* SPI */
+        reg = <0>; /* ignored, but necessary for SPI bindings */
+        spi-max-frequency = <4000000>;
+
+        /* WS2812 */
+        chain-length = <12>; /* 12x SK6812MINI-E */
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
 };
 
