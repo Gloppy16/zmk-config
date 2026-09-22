@@ -1,6 +1,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/rgb.h>
 
 #define BASE      0
 #define LOWER     1
@@ -56,7 +57,7 @@
                 &none    &none &none &none &none &none            &none &none &none &none &none &none
                 &none    &none &rgb_ug RGB_BRI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_EFF
                                                           &none &none &none &none &none &none
-                &none    &none &rgb_ug RGB_BRD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_EFF_RBG
+                &none    &none &rgb_ug RGB_BRD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_EFR
                                                           &none &none &none &none &none &none
                 &kp LGUI &mt LALT DEL &trans &kp SPACE &mkp LCLK    &mkp RCLK &kp ENTER &lt RAISE INT4 &kp BSPC &kp ESC
             >;
