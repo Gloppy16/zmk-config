@@ -85,6 +85,7 @@
     };
 
     chosen {
+        zephyr,display = &oled;
         zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
     };
@@ -131,17 +132,48 @@
     };
 };
 
-/* Optional OLED (128x32 SSD1306 on the Pro Micro I2C pins). Uncomment if installed.
+/* OLED (128x32 SSD1306 on the Pro Micro I2C pins, enabled Attempt 30).
+   Node shape mirrors ZMK v0.3.0's corne.dtsi; the binding requires
+   segment-offset / page-offset / display-offset / multiplex-ratio. */
 &i2c0 {
     status = "okay";
+
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
         width = <128>;
         height = <32>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <31>;
         segment-remap;
         com-invdir;
+        com-sequential;
+        inversion-on;
         prechargep = <0x22>;
     };
 };
-*/
+
+/* Re-route i2c0 onto the Pro Micro I2C header pins: the board default pinctrl
+   puts TWIM on P0.17/P0.20 (= D2/D3, the encoder pins here). Standard Pro
+   Micro I2C is SDA=D1=P0.06, SCL=D0=P0.08. Node merge overrides only psels,
+   same mechanism the spi3 block above uses. */
+&pinctrl {
+    i2c0_default: i2c0_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
+                <NRF_PSEL(TWIM_SCL, 0, 8)>;
+            bias-pull-up;
+        };
+    };
+
+    i2c0_sleep: i2c0_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
+                <NRF_PSEL(TWIM_SCL, 0, 8)>;
+            low-power-enable;
+            bias-pull-up;
+        };
+    };
+};
