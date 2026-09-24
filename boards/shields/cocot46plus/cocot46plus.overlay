@@ -51,12 +51,24 @@
        nice!nano arduino_pro_micro_pins.dtsi: 16->gpio0 10 (P0.10),
        8->gpio1 4 (P1.04), 9->gpio1 6 (P1.06). Index 16 IS in the map.
        No MOTION pin, driver polls at 125 Hz. invert-x/y = QMK's
-       POINTING_DEVICE_ROTATION_180. */
+       POINTING_DEVICE_ROTATION_180.
+
+       Attempt 37 (sensor unpowered, bench-confirmed): sensor VDD is
+       jumpered to the Pro Micro VCC pin, which on the nice!nano is a
+       SWITCHED rail - a load switch gated by P0.13. That pin is owned by
+       the board's mandatory EXT_POWER node (zmk,ext-power-generic,
+       control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>, nice_nano_v2.dts).
+       vcc-gpios below deliberately points at the SAME pin: the driver
+       re-asserts the rail at the top of every init attempt, so underglow
+       AUTO_OFF_IDLE (which calls ext_power_disable() on idle) or an
+       NVS-restored ext_power off-state can no longer starve the sensor.
+       Power-up wait = CONFIG_ADNS5050_POWER_UP_DELAY_MS (1 s default). */
     trackball: adns5050 {
         compatible = "pixart,adns5050";
         sclk-gpios = <&pro_micro 16 GPIO_ACTIVE_HIGH>;   /* B2 = P0.10 (NFC1) */
         sdio-gpios = <&pro_micro 8  GPIO_ACTIVE_HIGH>;   /* B4 = P1.04 */
         cs-gpios   = <&pro_micro 9  GPIO_ACTIVE_LOW>;    /* B5 = P1.06 */
+        vcc-gpios  = <&gpio0 13 GPIO_ACTIVE_HIGH>; /* switched VCC rail (P0.13, same as board EXT_POWER) */
         cpi = <500>;
         invert-x;
         invert-y;
