@@ -1,14 +1,161 @@
+/*
+ * cocot46plus — Miryoku 42-key adaptation (Attempt 39)
+ * Agen / Gloppy16/zmk-config
+ *
+ * Layout: Miryoku (github.com/manna-harbour/miryoku) defaults — Colemak-DH
+ * alphas, GACS home-row mods, official thumb/layer arrangement. Treated as a
+ * 42-key board (3x6 + 3 thumbs per half): the two outermost bottom-row keys
+ * (old LGUI / old ESC) and the two dedicated mouse-button keys are &none on
+ * every layer — clicks live on the MOUSE layer, Miryoku-style.
+ *
+ * Layers: 0 Base, 1 Nav, 2 Mouse, 3 Sym, 4 Num, 5 Fun, 6 Macro, 7 Utility.
+ * Access: hold thumbs 38/39 (Nav/Mouse) or 42/43/44 (Sym/Num/Fun);
+ *         hold 37 = Macro; hold 37 + hold Enter-position = Utility.
+ * Scroll-wheel: driver scroll-layers = <1 2> (Nav, Mouse) in the overlay.
+ *
+ * Home-row mods use stock Miryoku ZMK values: flavor tap-preferred,
+ * tapping-term 200 ms (u_mt), split left/right so opposite-hand chords work.
+ *
+ * MACROS: defined under "macros { ... }" below. To add one, copy an existing
+ * node, change the label and bindings, then bind &your_label on the Macro
+ * layer. Ctrl/Shift chords: macro_press ... macro_tap ... macro_release.
+ *
+ * Do not touch here: info.json (editor layout), conf files, overlay except
+ * nothing — scroll-layers <1 2> already points at Nav/Mouse by index.
+ */
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/pointing.h>
 
-#define BASE      0
-#define LOWER     1
-#define RAISE     2
-#define TRACKBALL 3
+#define BASE    0
+#define NAV     1
+#define MOUSE   2
+#define SYM     3
+#define NUM     4
+#define FUN     5
+#define MACRO   6
+#define UTILITY 7
 
 / {
+    behaviors {
+        /* Home-row mod hold-taps — Miryoku ZMK stock config (u_mt) */
+        hml: hml {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+        hmr: hmr {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    macros {
+        /* ================= VS Code (left hand, Macro layer) ================= */
+
+        /* Command palette: Ctrl+Shift+P */
+        vs_cmd: vs_cmd {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LCTRL &kp LSHFT>
+                , <&macro_tap &kp P>
+                , <&macro_release &kp LCTRL &kp LSHFT>
+                ;
+        };
+
+        /* Save all: Ctrl+K S (chorded command) */
+        vs_save_all: vs_save_all {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LCTRL>
+                , <&macro_tap &kp K>
+                , <&macro_release &kp LCTRL>
+                , <&macro_tap &kp S>
+                ;
+        };
+
+        /* Toggle built-in terminal: Ctrl+` */
+        vs_term: vs_term {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LCTRL>
+                , <&macro_tap &kp GRAVE>
+                , <&macro_release &kp LCTRL>
+                ;
+        };
+
+        /* Format document: Shift+Alt+F */
+        vs_fmt: vs_fmt {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LSHIFT &kp LALT>
+                , <&macro_tap &kp F>
+                , <&macro_release &kp LSHIFT &kp LALT>
+                ;
+        };
+
+        /* Quick open file: Ctrl+P */
+        vs_open: vs_open {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LCTRL>
+                , <&macro_tap &kp P>
+                , <&macro_release &kp LCTRL>
+                ;
+        };
+
+        /* ================= Blender (right hand, Macro layer) ================= */
+
+        /* Save: Ctrl+S */
+        bl_save: bl_save {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LCTRL>
+                , <&macro_tap &kp S>
+                , <&macro_release &kp LCTRL>
+                ;
+        };
+
+        /* Render image: F12 */
+        bl_render: bl_render {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp F12>;
+        };
+
+        /* ================= FreeCAD (placeholders — remap to taste) ================= */
+
+        /* New sketch: N, P sequence (placeholder) */
+        fc_sketch: fc_sketch {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp N &kp P>;
+        };
+
+        /* Pad: P, D sequence (placeholder) */
+        fc_pad: fc_pad {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp P &kp D>;
+        };
+    };
+
     sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder_0>;
@@ -17,54 +164,103 @@
     keymap {
         compatible = "zmk,keymap";
 
+        /* Physical grid: 12 / 12 / 12 / 10 bindings per layer.
+           Bottom row = positions 36-45; 36 (old LGUI), 40+41 (old mouse
+           buttons) and 45 (old ESC) are &none — the 42-key treatment. */
+
         base_layer {
             display-name = "Base";
             bindings = <
-&kp TAB    &kp Q         &kp W       &kp F      &kp P      &kp B      &kp J      &kp L       &kp U      &kp Y    &kp SQT   &kp BSPC
-&kp LCTRL  &kp A         &kp R       &kp S      &kp T      &kp G      &kp M      &kp N       &kp E      &kp I    &kp O     &kp SQT
-&kp LSHFT  &kp Z         &kp X       &kp C      &kp D      &kp V      &kp K      &kp H       &kp COMMA  &kp DOT  &kp FSLH  &kp MINUS
-&kp LGUI   &mt LALT DEL  &lt 1 INT5  &kp SPACE  &mkp LCLK  &mkp RCLK  &kp ENTER  &lt 2 INT4  &kp BSPC   &kp ESC
+/* outer |        5-column Miryoku block        | outer */
+&kp GRAVE   &kp Q    &kp W    &kp F    &kp P    &kp B    &kp J    &kp L    &kp U    &kp Y    &kp SQT   &kp BSLH
+&kp ESC     &hml LGUI A    &hml LALT R    &hml LCTRL S    &hml LSHFT T    &kp G    &kp M    &hmr LSHFT N    &hmr LCTRL E    &hmr LALT I    &hmr LGUI O    &kp DEL
+&kp TAB     &kp Z    &kp X    &kp C    &kp D    &kp V    &kp K    &kp H    &kp COMMA  &kp DOT  &kp FSLH  &kp CAPS
+&none       &lt MACRO ESC  &lt NAV SPACE  &kp SPACE  &none  &none  &kp ENTER  &lt SYM RET  &lt NUM BSPC  &lt FUN DEL
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
-        lower_layer {
-            display-name = "Lower";
+        nav_layer {
+            display-name = "Nav";
             bindings = <
-&kp ESC    &kp EXCL      &kp AT     &kp HASH   &kp DLLR  &kp PRCNT  &kp CARET  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RPAR   &kp BSPC
-&kp LCTRL  &none         &none      &none      &none     &none      &kp LBRC   &kp RBRC  &kp LBKT   &kp RBKT  &kp COLON  &kp DQT
-&kp LSHFT  &kp GRAVE     &kp TILDE  &kp NUBS   &kp PIPE  &none      &kp EQL    &kp PLUS  &kp LT     &kp GT    &kp QMARK  &kp UNDER
-&kp LGUI   &mt LALT DEL  &trans     &kp SPACE  &mkp MB4  &mkp MB5   &kp ENTER  &tog 3    &kp BSPC   &kp ESC
+&none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
+&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &caps_word  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &kp RALT
+&none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &kp INS  &kp HOME  &kp PG_DN  &kp PG_UP  &kp END
+&none       &trans  &trans  &kp RET  &none  &none  &kp BSPC  &kp DEL  &kp TAB  &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
-        raise_layer {
-            display-name = "Raise";
+        mouse_layer {
+            display-name = "Mouse";
             bindings = <
-&kp ESC    &kp N1        &kp N2  &kp N3     &kp N4    &kp N5    &kp N6     &kp N7    &kp N8        &kp N9     &kp N0    &kp BSPC
-&kp LCTRL  &kp F1        &kp F2  &kp F3     &kp F4    &kp F5    &kp K_APP  &kp UP    &kp LS(INT1)  &kp UNDER  &kp DQT   &kp COLON
-&kp LSHFT  &kp F6        &kp F7  &kp F8     &kp F9    &kp F10   &kp LEFT   &kp DOWN  &kp RIGHT     &kp DOT    &kp FSLH  &kp MINUS
-&kp LGUI   &mt LALT DEL  &tog 3  &kp SPACE  &mkp MB4  &mkp MB5  &kp ENTER  &trans    &kp BSPC      &kp ESC
+&none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
+&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &none  &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP  &mmv MOVE_RIGHT  &kp RALT
+&none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP  &msc SCRL_RIGHT  &none
+&none       &trans  &trans  &mkp LCLK  &none  &none  &mkp RCLK  &mkp MB4  &mkp MB5  &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
-        trackball_layer {
-            display-name = "Trackball";
+        sym_layer {
+            display-name = "Sym";
             bindings = <
-&none     &none         &none            &none            &none            &none            &none      &none       &none     &none    &none  &none
-&none     &none         &rgb_ug RGB_BRI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_EFF  &none      &none       &none     &none    &none  &none
-&none     &none         &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none      &none       &none     &none    &none  &none
-&kp LGUI  &mt LALT DEL  &trans           &kp SPACE        &mkp LCLK        &mkp RCLK        &kp ENTER  &lt 2 INT4  &kp BSPC  &kp ESC
+&none       &kp LBRC  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RBRC    &none  &none  &none  &none  &none  &none
+&kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
+&none       &kp LPAR  &kp RPAR  &kp UNDER  &none  &none  &trans  &trans  &trans  &none
             >;
 
-            /* QMK's SCRL_TO/CPI_SW/SCRL_SW/ROT_L15/ROT_R15/SCRL_IN keycodes have no
-               direct ZMK equivalents — scroll mode is handled by the driver's
-               scroll-layers property; CPI etc. are set in the overlay */
+            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+        };
+
+        num_layer {
+            display-name = "Num";
+            bindings = <
+&none       &kp LBKT  &kp N7  &kp N8  &kp N9  &kp RBKT    &none  &none  &none  &none  &none  &none
+&kp SEMI    &kp N4  &kp N5  &kp N6  &kp EQUAL  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp GRAVE   &kp N1  &kp N2  &kp N3  &kp BSLH  &none    &none  &none  &none  &none  &none  &none
+&none       &kp DOT  &kp N0  &kp MINUS  &none  &none  &trans  &trans  &trans  &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+        };
+
+        fun_layer {
+            display-name = "Fun";
+            bindings = <
+&none       &kp F12  &kp F7  &kp F8  &kp F9  &kp PSCRN    &none  &none  &none  &none  &none  &none
+&kp F11     &kp F4  &kp F5  &kp F6  &kp SLCK  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp F10     &kp F1  &kp F2  &kp F3  &kp PAUSE_BREAK  &none    &none  &none  &none  &none  &none  &none
+&none       &kp K_APP  &kp SPACE  &kp TAB  &none  &none  &trans  &trans  &trans  &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+        };
+
+        macro_layer {
+            display-name = "Macro";
+            bindings = <
+&none       &vs_cmd  &vs_save_all  &vs_term  &vs_fmt  &vs_open    &bl_render  &bl_save  &fc_sketch  &fc_pad  &none  &none
+&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &none  &none  &none  &none  &none  &none
+&none       &trans  &trans  &kp SPACE  &none  &none  &mo UTILITY  &trans  &trans  &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+        };
+
+        utility_layer {
+            display-name = "Utility";
+            bindings = <
+&none       &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_BRI    &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none  &none
+&none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&none       &bt BT_CLR  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_TOG    &none  &none  &none  &none  &none  &none
+&none       &trans  &trans  &kp K_APP  &none  &none  &trans  &sys_reset  &bootloader  &none
+            >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };

@@ -72,7 +72,7 @@
         cpi = <500>;
         invert-x;
         invert-y;
-        scroll-layers = <1 2>;  /* LOWER, RAISE */
+        scroll-layers = <1 2>;  /* Nav, Mouse — wheel scrolls when highest active layer is 1 or 2 */
     };
 
     trackball_listener {
