@@ -2,16 +2,19 @@
  * cocot46plus — Miryoku 42-key adaptation (Attempt 39)
  * Agen / Gloppy16/zmk-config
  *
- * Layout: Miryoku (github.com/manna-harbour/miryoku) defaults — Colemak-DH
- * alphas, GACS home-row mods, official thumb/layer arrangement. Treated as a
- * 42-key board (3x6 + 3 thumbs per half): the two outermost bottom-row keys
- * (old LGUI / old ESC) and the two dedicated mouse-button keys are &none on
- * every layer — clicks live on the MOUSE layer, Miryoku-style.
+ * Layout: Miryoku (github.com/manna-harbour/miryoku) derived — Colemak-DH
+ * alphas, GACS home-row mods. Treated as a 42-key board (3x6 + 3 thumbs per
+ * half): the two outermost bottom-row keys (old LGUI / old ESC) and the two
+ * dedicated mouse-button keys are &none on every layer. Rev2 (Attempt 41):
+ * the Mouse layer is GONE — the trackball pointer is always active at driver
+ * level, and clicks live on the Macro layer. Space/Enter are plain taps
+ * (never tap/hold muxed); layer switches are pure thumb holds.
  *
- * Layers: 0 Base, 1 Nav, 2 Mouse, 3 Sym, 4 Num, 5 Fun, 6 Macro, 7 Utility.
- * Access: hold thumbs 38/39 (Nav/Mouse) or 42/43/44 (Sym/Num/Fun);
- *         hold 37 = Macro; hold 37 + hold Enter-position = Utility.
- * Scroll-wheel: driver scroll-layers = <1 2> (Nav, Mouse) in the overlay.
+ * Layers: 0 Base, 1 Nav, 2 Num, 3 Sym, 4 Fun, 5 Macro, 6 Utility.
+ * Access: hold 37=Macro, 38=Nav, 43=Sym, 44=Num; 39=Space / 42=Enter plain.
+ *         Fun     = hold Sym (43) + Num-position (44) together.
+ *         Utility = hold Macro (37) + Enter-position (42, &mo on Macro layer).
+ * Scroll-wheel: driver scroll-layers = <1> (Nav only) in the overlay.
  *
  * Home-row mods use stock Miryoku ZMK values: flavor tap-preferred,
  * tapping-term 200 ms (u_mt), split left/right so opposite-hand chords work.
@@ -20,8 +23,8 @@
  * node, change the label and bindings, then bind &your_label on the Macro
  * layer. Ctrl/Shift chords: macro_press ... macro_tap ... macro_release.
  *
- * Do not touch here: info.json (editor layout), conf files, overlay except
- * nothing — scroll-layers <1 2> already points at Nav/Mouse by index.
+ * Do not touch here: info.json (editor layout), conf files,
+ * overlay scroll-layers = <1> (Nav) — bump it if a new scroll layer is added.
  */
 
 #include <behaviors.dtsi>
@@ -34,12 +37,11 @@
 
 #define BASE    0
 #define NAV     1
-#define MOUSE   2
+#define NUM     2
 #define SYM     3
-#define NUM     4
-#define FUN     5
-#define MACRO   6
-#define UTILITY 7
+#define FUN     4
+#define MACRO   5
+#define UTILITY 6
 
 / {
     behaviors {
@@ -174,8 +176,11 @@
 /* outer |        5-column Miryoku block        | outer */
 &kp GRAVE   &kp Q    &kp W    &kp F    &kp P    &kp B    &kp J    &kp L    &kp U    &kp Y    &kp SQT   &kp BSLH
 &kp ESC     &hml LGUI A    &hml LALT R    &hml LCTRL S    &hml LSHFT T    &kp G    &kp M    &hmr LSHFT N    &hmr LCTRL E    &hmr LALT I    &hmr LGUI O    &kp DEL
-&kp TAB     &kp Z    &kp X    &kp C    &kp D    &kp V    &kp K    &kp H    &kp COMMA  &kp DOT  &kp FSLH  &kp CAPS
-&none       &lt MACRO ESC  &lt NAV SPACE  &lt MOUSE SPACE  &none  &none  &lt SYM RET  &lt NUM BSPC  &lt FUN DEL  &none
+&kp TAB     &kp Z    &kp X    &kp C    &kp D    &kp V    &kp K    &kp H    &kp COMMA  &kp DOT  &kp FSLH  &none
+/* thumbs: pure holds (Macro/Nav/Sym/Num) + plain Space/Enter taps — no
+   tap/hold muxing on the thumbs; CAPS removed from bottom-outer (pos 30),
+   it lives on the Utility layer now */
+&none       &mo MACRO  &mo NAV  &kp SPACE  &none  &none  &kp RET  &mo SYM  &mo NUM  &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
@@ -193,30 +198,6 @@
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
-        mouse_layer {
-            display-name = "Mouse";
-            bindings = <
-&none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
-&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &none  &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP  &mmv MOVE_RIGHT  &kp RALT
-&none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP  &msc SCRL_RIGHT  &none
-&none       &trans  &trans  &mkp LCLK  &none  &none  &mkp RCLK  &mkp MB4  &mkp MB5  &none
-            >;
-
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
-        };
-
-        sym_layer {
-            display-name = "Sym";
-            bindings = <
-&none       &kp LBRC  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RBRC    &none  &none  &none  &none  &none  &none
-&kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
-&none       &kp LPAR  &kp RPAR  &kp UNDER  &none  &none  &trans  &trans  &trans  &none
-            >;
-
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
-        };
-
         num_layer {
             display-name = "Num";
             bindings = <
@@ -229,13 +210,26 @@
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
         };
 
+        sym_layer {
+            display-name = "Sym";
+            bindings = <
+&none       &kp LBRC  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RBRC    &none  &none  &none  &none  &none  &none
+&kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
+/* outer right thumb = &mo FUN: hold Sym (43) + Num-position (44) for Fun */
+&none       &kp LPAR  &kp RPAR  &kp UNDER  &none  &none  &trans  &trans  &mo FUN  &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+        };
+
         fun_layer {
             display-name = "Fun";
             bindings = <
 &none       &kp F12  &kp F7  &kp F8  &kp F9  &kp PSCRN    &none  &none  &none  &none  &none  &none
 &kp F11     &kp F4  &kp F5  &kp F6  &kp SLCK  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp F10     &kp F1  &kp F2  &kp F3  &kp PAUSE_BREAK  &none    &none  &none  &none  &none  &none  &none
-&none       &kp K_APP  &kp SPACE  &kp TAB  &none  &none  &trans  &trans  &trans  &none
+&none       &kp K_APP  &trans  &kp TAB  &none  &none  &trans  &trans  &trans  &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
@@ -246,8 +240,10 @@
             bindings = <
 &none       &vs_cmd  &vs_save_all  &vs_term  &vs_fmt  &vs_open    &bl_render  &bl_save  &fc_sketch  &fc_pad  &none  &none
 &kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &none  &none  &none  &none  &none  &none
-&none       &trans  &trans  &kp SPACE  &none  &none  &mo UTILITY  &trans  &trans  &none
+/* clicks (30-33): pointer is always active at driver level — occasional
+   LCLK / RCLK / MB4 / MB5 for when the trackball needs a button press */
+&none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &mkp LCLK  &mkp RCLK  &mkp MB4  &mkp MB5  &none  &none
+&none       &trans  &trans  &trans  &none  &none  &mo UTILITY  &trans  &trans  &none
             >;
 
             sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
@@ -257,7 +253,7 @@
             display-name = "Utility";
             bindings = <
 &none       &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_BRI    &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none  &none
-&none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &kp CAPS  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &none       &bt BT_CLR  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_TOG    &none  &none  &none  &none  &none  &none
 &none       &trans  &trans  &kp K_APP  &none  &none  &trans  &sys_reset  &bootloader  &none
             >;
