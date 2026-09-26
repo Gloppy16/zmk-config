@@ -50,7 +50,8 @@
                 { "label": "Ret",   "row": 3, "col":  6, "x":  8.5, "y": 3 },
                 { "label": "Raise", "row": 3, "col":  7, "x":  9.5, "y": 3 },
                 { "label": "Bspc",  "row": 3, "col":  8, "x": 10.5, "y": 3 },
-                { "label": "Esc",   "row": 3, "col":  9, "x": 11.5, "y": 3 }
+                { "label": "Esc",   "row": 3, "col":  9, "x": 11.5, "y": 3 },
+                { "label": "Enc",   "row": 4, "col":  0, "x":  7,   "y": 4 }
             ]
         }
     },

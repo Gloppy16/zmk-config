@@ -15,6 +15,8 @@
  *         Fun     = hold Sym (43) + Num-position (44) together.
  *         Utility = hold Macro (37) + Enter-position (42, &mo on Macro layer).
  * Scroll-wheel: driver scroll-layers = <1> (Nav only) in the overlay.
+ * Encoder (Attempt 42): rotation = mouse wheel (&enc_scrl wraps &msc) on
+ * every layer; press = middle click, key position 40 (all layers).
  *
  * Home-row mods use stock Miryoku ZMK values: flavor tap-preferred,
  * tapping-term 200 ms (u_mt), split left/right so opposite-hand chords work.
@@ -45,6 +47,21 @@
 
 / {
     behaviors {
+        /* Encoder rotation → mouse wheel (Attempt 42): a sensor-rotate-var
+           wrapping &msc (zmk,behavior-input-two-axis, INPUT_REL_WHEEL).
+           &inc_dec_kp only wraps &kp, so it cannot emit scroll events.
+           tap-ms MUST stay above the &msc trigger-period (16 ms): &msc emits
+           on a 16 ms tick and truncates float accumulation, so a shorter tap
+           emits nothing. 30 ms ⇒ ≥1 tick per detent (verified vs v0.3.0
+           source: behavior_queue.c processes release after `wait`;
+           tick_work_cb schedules every trigger_period_ms). */
+        enc_scrl: sensor_rotate_msc {
+            compatible = "zmk,behavior-sensor-rotate-var";
+            #sensor-binding-cells = <2>;
+            tap-ms = <30>;
+            bindings = <&msc>, <&msc>;
+        };
+
         /* Home-row mod hold-taps — Miryoku ZMK stock config (u_mt) */
         hml: hml {
             compatible = "zmk,behavior-hold-tap";
@@ -179,11 +196,12 @@
 &kp TAB     &kp Z    &kp X    &kp C    &kp D    &kp V    &kp K    &kp H    &kp COMMA  &kp DOT  &kp FSLH  &none
 /* thumbs: pure holds (Macro/Nav/Sym/Num) + plain Space/Enter taps — no
    tap/hold muxing on the thumbs; CAPS removed from bottom-outer (pos 30),
-   it lives on the Utility layer now */
-&none       &mo MACRO  &mo NAV  &kp SPACE  &none  &none  &kp RET  &mo SYM  &mo NUM  &none
+   it lives on the Utility layer now. Pos 40 = EC11 push switch (between
+   the thumbs, under the trackball; QMK binds KC_MS_BTN3 there) → MCLK. */
+&none       &mo MACRO  &mo NAV  &kp SPACE  &mkp MCLK  &none  &kp RET  &mo SYM  &mo NUM  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         nav_layer {
@@ -192,10 +210,10 @@
 &none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
 &kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &caps_word  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &kp RALT
 &none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &kp INS  &kp HOME  &kp PG_DN  &kp PG_UP  &kp END
-&none       &trans  &trans  &kp RET  &none  &none  &kp BSPC  &kp DEL  &kp TAB  &none
+&none       &trans  &trans  &kp RET  &mkp MCLK  &none  &kp BSPC  &kp DEL  &kp TAB  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         num_layer {
@@ -204,10 +222,10 @@
 &none       &kp LBKT  &kp N7  &kp N8  &kp N9  &kp RBKT    &none  &none  &none  &none  &none  &none
 &kp SEMI    &kp N4  &kp N5  &kp N6  &kp EQUAL  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp GRAVE   &kp N1  &kp N2  &kp N3  &kp BSLH  &none    &none  &none  &none  &none  &none  &none
-&none       &kp DOT  &kp N0  &kp MINUS  &none  &none  &trans  &trans  &trans  &none
+&none       &kp DOT  &kp N0  &kp MINUS  &mkp MCLK  &none  &trans  &trans  &trans  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         sym_layer {
@@ -217,10 +235,10 @@
 &kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
 /* outer right thumb = &mo FUN: hold Sym (43) + Num-position (44) for Fun */
-&none       &kp LPAR  &kp RPAR  &kp UNDER  &none  &none  &trans  &trans  &mo FUN  &none
+&none       &kp LPAR  &kp RPAR  &kp UNDER  &mkp MCLK  &none  &trans  &trans  &mo FUN  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         fun_layer {
@@ -229,10 +247,10 @@
 &none       &kp F12  &kp F7  &kp F8  &kp F9  &kp PSCRN    &none  &none  &none  &none  &none  &none
 &kp F11     &kp F4  &kp F5  &kp F6  &kp SLCK  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp F10     &kp F1  &kp F2  &kp F3  &kp PAUSE_BREAK  &none    &none  &none  &none  &none  &none  &none
-&none       &kp K_APP  &trans  &kp TAB  &none  &none  &trans  &trans  &trans  &none
+&none       &kp K_APP  &trans  &kp TAB  &mkp MCLK  &none  &trans  &trans  &trans  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         macro_layer {
@@ -243,10 +261,10 @@
 /* clicks (30-33): pointer is always active at driver level — occasional
    LCLK / RCLK / MB4 / MB5 for when the trackball needs a button press */
 &none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &mkp LCLK  &mkp RCLK  &mkp MB4  &mkp MB5  &none  &none
-&none       &trans  &trans  &trans  &none  &none  &mo UTILITY  &trans  &trans  &none
+&none       &trans  &trans  &trans  &mkp MCLK  &none  &mo UTILITY  &trans  &trans  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
 
         utility_layer {
@@ -255,10 +273,10 @@
 &none       &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_BRI    &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none  &none
 &none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &kp CAPS  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &none       &bt BT_CLR  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_TOG    &none  &none  &none  &none  &none  &none
-&none       &trans  &trans  &kp K_APP  &none  &none  &trans  &sys_reset  &bootloader  &none
+&none       &trans  &trans  &kp K_APP  &mkp MCLK  &none  &trans  &sys_reset  &bootloader  &none
             >;
 
-            sensor-bindings = <&inc_dec_kp PG_DN PG_UP>;
+            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
         };
     };
 };
