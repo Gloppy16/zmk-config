@@ -196,21 +196,23 @@
     };
 };
 
-/* 12x SK6812MINI-E chain on P0.12. CAUTION (Attempt 34 audit): the QMK
-   ground truth for the strip is B6 = PB6 = silk D10 = P0.09 (NFC2 pad).
-   The MSFMFJT ZMK port uses P0.12, but that port describes a DIFFERENT
-   board variant (5 matrix rows), so P0.12 vs P0.09 is UNRESOLVED against
-   this PCB - left unchanged pending bench evidence / coordinator sign-off. */
+/* 12x SK6812MINI-E chain on P0.09 (Attempt 49). Bench-confirmed by Agen:
+   the strip data pad is silk B6 = PB6 = P0.09 (NFC2 pad) per the PCB
+   silkscreen, and the scope shows P0.09 undriven ("stays high") under the
+   old P0.12 firmware. P0.12 (the MSFMFJT port value) belongs to a different
+   board variant (5 matrix rows) and drove nothing on this PCB.
+   NFC caveat: P0.09/P0.10 are the NFC pair, but GPIO use is proven on this
+   unit - the trackball SCLK on P0.10 (NFC1) works (bench, Attempts 34+). */
 &pinctrl {
     spi3_default: spi3_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 12)>;   /* B6 */
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 9)>;   /* B6 = P0.09, silkscreen-confirmed */
         };
     };
 
     spi3_sleep: spi3_sleep {
         group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 12)>;   /* B6 */
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 9)>;   /* B6 = P0.09, silkscreen-confirmed */
             low-power-enable;
         };
     };

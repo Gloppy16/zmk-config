@@ -4,10 +4,13 @@
  *
  * Layout: Miryoku (github.com/manna-harbour/miryoku) derived — Colemak-DH
  * alphas, GACS home-row mods. Treated as a 42-key board (3x6 + 3 thumbs per
- * half): the two outermost bottom-row keys (old LGUI / old ESC) and the two
- * dedicated mouse-button keys are &none on every layer. Rev2 (Attempt 41):
+ * half): the two outermost bottom-row keys (old LGUI / old ESC) are &none on
+ * every layer. The two dedicated click keys (40 LClk / 41 RClk) carry
+ * &mkp LCLK / &mkp RCLK on ALL 7 layers as of Attempt 49 (they were &none
+ * through Attempt 48). Rev2 (Attempt 41):
  * the Mouse layer is GONE — the trackball pointer is always active at driver
- * level, and clicks live on the Macro layer. Space/Enter are plain taps
+ * level; dedicated LCLK/RCLK keys sit at 40/41 on every layer (A49), and
+ * MB4/MB5 live on the Macro layer. Space/Enter are plain taps
  * (never tap/hold muxed); layer switches are pure thumb holds.
  *
  * Layers: 0 Base, 1 Nav, 2 Num, 3 Sym, 4 Fun, 5 Macro, 6 Utility.
@@ -24,7 +27,11 @@
  * (display row 4) can no longer precede the row-3 bottom keys in
  * layouts[LAYOUT].layout. Physical wiring unchanged — the transform entry
  * stays RC(3,4) (bench-proven in A42); only its logical slot moved 40→46.
- * The vacated index-40 binding reverted to &none (Attempt 41 content).
+ * The vacated index-40 binding reverted to &none (Attempt 41 content);
+ * Attempt 49 reuses positions 40/41 for the dedicated click keys (LCLK/RCLK
+ * on all 7 layers). NOTE: 40/41 were the documented Studio-unlock fallback
+ * slot (A45) - that fallback is now consumed; if Studio locking is ever
+ * re-enabled, an unlock key must live somewhere else.
  *
  * Home-row mods use stock Miryoku ZMK values: flavor tap-preferred,
  * tapping-term 200 ms (u_mt), split left/right so opposite-hand chords work.
@@ -192,9 +199,11 @@
         compatible = "zmk,keymap";
 
         /* Physical grid: 12 / 12 / 12 / 10 + encoder = 47 bindings per layer.
-           Bottom row = positions 36-45; 36 (old LGUI), 40+41 (old mouse
-           buttons) and 45 (old ESC) are &none — the 42-key treatment.
-           Position 46 = EC11 encoder press → MCLK on every layer (A44). */
+           Bottom row = positions 36-45; 36 (old LGUI) and 45 (old ESC) are
+           &none — the 42-key treatment. Positions 40/41 = the dedicated
+           click keys: &mkp LCLK / &mkp RCLK on ALL 7 layers (A49; were
+           &none through A48). Position 46 = EC11 encoder press → MCLK on
+           every layer (A44). */
 
         base_layer {
             display-name = "Base";
@@ -207,8 +216,8 @@
    tap/hold muxing on the thumbs; CAPS removed from bottom-outer (pos 30),
    it lives on the Utility layer now. Pos 46 (last) = EC11 push switch
    (between the thumbs, under the trackball; QMK binds KC_MS_BTN3 there) →
-   MCLK; pos 40 back to &none (A41). */
-&none  &mo MACRO  &mo NAV  &kp SPACE  &none  &none  &kp RET  &mo SYM  &mo NUM  &none  &mkp MCLK
+   MCLK. Pos 40/41 = the dedicated click keys (LCLK/RCLK since A49). */
+&none  &mo MACRO  &mo NAV  &kp SPACE  &mkp LCLK  &mkp RCLK  &kp RET  &mo SYM  &mo NUM  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -220,7 +229,7 @@
 &none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
 &kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &caps_word  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &kp RALT
 &none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &kp INS  &kp HOME  &kp PG_DN  &kp PG_UP  &kp END
-&none  &trans  &trans  &kp RET  &none  &none  &kp BSPC  &kp DEL  &kp TAB  &none  &mkp MCLK
+&none  &trans  &trans  &kp RET  &mkp LCLK  &mkp RCLK  &kp BSPC  &kp DEL  &kp TAB  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -232,7 +241,7 @@
 &none       &kp LBKT  &kp N7  &kp N8  &kp N9  &kp RBKT    &none  &none  &none  &none  &none  &none
 &kp SEMI    &kp N4  &kp N5  &kp N6  &kp EQUAL  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp GRAVE   &kp N1  &kp N2  &kp N3  &kp BSLH  &none    &none  &none  &none  &none  &none  &none
-&none  &kp DOT  &kp N0  &kp MINUS  &none  &none  &trans  &trans  &trans  &none  &mkp MCLK
+&none  &kp DOT  &kp N0  &kp MINUS  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -245,7 +254,7 @@
 &kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
 /* outer right thumb = &mo FUN: hold Sym (43) + Num-position (44) for Fun */
-&none  &kp LPAR  &kp RPAR  &kp UNDER  &none  &none  &trans  &trans  &mo FUN  &none  &mkp MCLK
+&none  &kp LPAR  &kp RPAR  &kp UNDER  &mkp LCLK  &mkp RCLK  &trans  &trans  &mo FUN  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -257,7 +266,7 @@
 &none       &kp F12  &kp F7  &kp F8  &kp F9  &kp PSCRN    &none  &none  &none  &none  &none  &none
 &kp F11     &kp F4  &kp F5  &kp F6  &kp SLCK  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp F10     &kp F1  &kp F2  &kp F3  &kp PAUSE_BREAK  &none    &none  &none  &none  &none  &none  &none
-&none  &kp K_APP  &trans  &kp TAB  &none  &none  &trans  &trans  &trans  &none  &mkp MCLK
+&none  &kp K_APP  &trans  &kp TAB  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -268,10 +277,11 @@
             bindings = <
 &none       &vs_cmd  &vs_save_all  &vs_term  &vs_fmt  &vs_open    &bl_render  &bl_save  &fc_sketch  &fc_pad  &none  &none
 &kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-/* clicks (30-33): pointer is always active at driver level — occasional
-   LCLK / RCLK / MB4 / MB5 for when the trackball needs a button press */
+/* clicks (30-33): pointer is always active at driver level. LCLK/RCLK here
+   duplicate the dedicated click keys (40/41 — bound on all layers since
+   A49); MB4/MB5 live only on this layer. Kept as-is (harmless, A49). */
 &none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &mkp LCLK  &mkp RCLK  &mkp MB4  &mkp MB5  &none  &none
-&none  &trans  &trans  &trans  &none  &none  &mo UTILITY  &trans  &trans  &none  &mkp MCLK
+&none  &trans  &trans  &trans  &mkp LCLK  &mkp RCLK  &mo UTILITY  &trans  &trans  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -283,7 +293,7 @@
 &none       &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_BRI    &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none  &none
 &none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &kp CAPS  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &none       &bt BT_CLR  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_TOG    &none  &none  &none  &none  &none  &none
-&none  &trans  &trans  &kp K_APP  &none  &none  &trans  &sys_reset  &bootloader  &none  &mkp MCLK
+&none  &trans  &trans  &kp K_APP  &mkp LCLK  &mkp RCLK  &trans  &sys_reset  &bootloader  &none  &mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
