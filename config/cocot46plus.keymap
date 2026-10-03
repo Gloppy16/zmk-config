@@ -45,12 +45,12 @@
  */
 
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
-#include <dt-bindings/zmk/rgb.h>
-#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/rgb.h>
 
 #define BASE    0
 #define NAV     1
@@ -70,6 +70,7 @@
            emits nothing. 30 ms ⇒ ≥1 tick per detent (verified vs v0.3.0
            source: behavior_queue.c processes release after `wait`;
            tick_work_cb schedules every trigger_period_ms). */
+
         enc_scrl: sensor_rotate_msc {
             compatible = "zmk,behavior-sensor-rotate-var";
             #sensor-binding-cells = <2>;
@@ -78,6 +79,7 @@
         };
 
         /* Home-row mod hold-taps — Miryoku ZMK stock config (u_mt) */
+
         hml: hml {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -85,6 +87,7 @@
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
+
         hmr: hmr {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -96,97 +99,116 @@
 
     macros {
         /* ================= VS Code (left hand, Macro layer) ================= */
-
         /* Command palette: Ctrl+Shift+P */
+
         vs_cmd: vs_cmd {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LCTRL &kp LSHFT>
-                , <&macro_tap &kp P>
-                , <&macro_release &kp LCTRL &kp LSHFT>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LCTRL &kp LSHFT>,
+                <&macro_tap>,
+                <&kp P>,
+                <&macro_release>,
+                <&kp LCTRL &kp LSHFT>;
         };
 
         /* Save all: Ctrl+K S (chorded command) */
+
         vs_save_all: vs_save_all {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LCTRL>
-                , <&macro_tap &kp K>
-                , <&macro_release &kp LCTRL>
-                , <&macro_tap &kp S>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LCTRL>,
+                <&macro_tap>,
+                <&kp K>,
+                <&macro_release>,
+                <&kp LCTRL>,
+                <&macro_tap>,
+                <&kp S>;
         };
 
         /* Toggle built-in terminal: Ctrl+` */
+
         vs_term: vs_term {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LCTRL>
-                , <&macro_tap &kp GRAVE>
-                , <&macro_release &kp LCTRL>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LCTRL>,
+                <&macro_tap>,
+                <&kp GRAVE>,
+                <&macro_release>,
+                <&kp LCTRL>;
         };
 
         /* Format document: Shift+Alt+F */
+
         vs_fmt: vs_fmt {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LSHIFT &kp LALT>
-                , <&macro_tap &kp F>
-                , <&macro_release &kp LSHIFT &kp LALT>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LSHIFT &kp LALT>,
+                <&macro_tap>,
+                <&kp F>,
+                <&macro_release>,
+                <&kp LSHIFT &kp LALT>;
         };
 
         /* Quick open file: Ctrl+P */
+
         vs_open: vs_open {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LCTRL>
-                , <&macro_tap &kp P>
-                , <&macro_release &kp LCTRL>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LCTRL>,
+                <&macro_tap>,
+                <&kp P>,
+                <&macro_release>,
+                <&kp LCTRL>;
         };
 
         /* ================= Blender (right hand, Macro layer) ================= */
-
         /* Save: Ctrl+S */
+
         bl_save: bl_save {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings
-                = <&macro_press &kp LCTRL>
-                , <&macro_tap &kp S>
-                , <&macro_release &kp LCTRL>
-                ;
+            bindings =
+                <&macro_press>,
+                <&kp LCTRL>,
+                <&macro_tap>,
+                <&kp S>,
+                <&macro_release>,
+                <&kp LCTRL>;
         };
 
         /* Render image: F12 */
+
         bl_render: bl_render {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp F12>;
+            bindings = <&macro_tap>, <&kp F12>;
         };
 
         /* ================= FreeCAD (placeholders — remap to taste) ================= */
-
         /* New sketch: N, P sequence (placeholder) */
+
         fc_sketch: fc_sketch {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp N &kp P>;
+            bindings = <&macro_tap>, <&kp N &kp P>;
         };
 
         /* Pad: P, D sequence (placeholder) */
+
         fc_pad: fc_pad {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp P &kp D>;
+            bindings = <&macro_tap>, <&kp P &kp D>;
         };
     };
 
@@ -208,16 +230,11 @@
         base_layer {
             display-name = "Base";
             bindings = <
-/* outer |        5-column Miryoku block        | outer */
-&kp GRAVE   &kp Q    &kp W    &kp F    &kp P    &kp B    &kp J    &kp L    &kp U    &kp Y    &kp SQT   &kp BSLH
-&kp ESC     &hml LGUI A    &hml LALT R    &hml LCTRL S    &hml LSHFT T    &kp G    &kp M    &hmr LSHFT N    &hmr LCTRL E    &hmr LALT I    &hmr LGUI O    &kp DEL
-&kp TAB     &kp Z    &kp X    &kp C    &kp D    &kp V    &kp K    &kp H    &kp COMMA  &kp DOT  &kp FSLH  &none
-/* thumbs: pure holds (Macro/Nav/Sym/Num) + plain Space/Enter taps — no
-   tap/hold muxing on the thumbs; CAPS removed from bottom-outer (pos 30),
-   it lives on the Utility layer now. Pos 46 (last) = EC11 push switch
-   (between the thumbs, under the trackball; QMK binds KC_MS_BTN3 there) →
-   MCLK. Pos 40/41 = the dedicated click keys (LCLK/RCLK since A49). */
-&none  &mo MACRO  &mo NAV  &kp SPACE  &mkp LCLK  &mkp RCLK  &kp RET  &mo SYM  &mo NUM  &none  &mkp MCLK
+&kp GRAVE  &kp Q        &kp W        &kp F         &kp P         &kp B      &kp J    &kp L         &kp U         &kp Y        &kp SQT      &kp BACKSPACE
+&kp ESC    &hml LGUI A  &hml LALT R  &hml LCTRL S  &hml LSHFT T  &kp G      &kp M    &hmr LSHFT N  &hmr LCTRL E  &hmr LALT I  &hmr LGUI O  &kp DEL
+&kp TAB    &kp Z        &kp X        &kp C         &kp D         &kp V      &kp K    &kp H         &kp COMMA     &kp DOT      &kp FSLH     &none
+&none      &mo MACRO    &mo NAV      &kp SPACE     &mkp LCLK     &mkp RCLK  &kp RET  &mo SYM       &mo NUM       &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -226,10 +243,11 @@
         nav_layer {
             display-name = "Nav";
             bindings = <
-&none       &none  &none  &none  &none  &none    &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
-&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &caps_word  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &kp RALT
-&none       &none  &kp LALT  &kp LCTRL  &kp LSHFT  &none   &none    &kp INS  &kp HOME  &kp PG_DN  &kp PG_UP  &kp END
-&none  &trans  &trans  &kp RET  &mkp LCLK  &mkp RCLK  &kp BSPC  &kp DEL  &kp TAB  &none  &mkp MCLK
+&none      &none     &none      &none      &none      &none      &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
+&kp LGUI   &kp LALT  &kp LCTRL  &kp LSHFT  &none      &none      &caps_word   &kp LEFT     &kp DOWN    &kp UP     &kp RIGHT   &kp RALT
+&none      &none     &kp LALT   &kp LCTRL  &kp LSHFT  &none      &none        &kp INS      &kp HOME    &kp PG_DN  &kp PG_UP   &kp END
+&none      &trans    &trans     &kp RET    &mkp LCLK  &mkp RCLK  &kp BSPC     &kp DEL      &kp TAB     &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -238,10 +256,11 @@
         num_layer {
             display-name = "Num";
             bindings = <
-&none       &kp LBKT  &kp N7  &kp N8  &kp N9  &kp RBKT    &none  &none  &none  &none  &none  &none
-&kp SEMI    &kp N4  &kp N5  &kp N6  &kp EQUAL  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp GRAVE   &kp N1  &kp N2  &kp N3  &kp BSLH  &none    &none  &none  &none  &none  &none  &none
-&none  &kp DOT  &kp N0  &kp MINUS  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans  &none  &mkp MCLK
+&none      &kp LBKT  &kp N7  &kp N8     &kp N9     &kp RBKT   &none   &none      &none      &none     &none     &none
+&kp SEMI   &kp N4    &kp N5  &kp N6     &kp EQUAL  &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp GRAVE  &kp N1    &kp N2  &kp N3     &kp BSLH   &none      &none   &none      &none      &none     &none     &none
+&none      &kp DOT   &kp N0  &kp MINUS  &mkp LCLK  &mkp RCLK  &trans  &trans     &trans     &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -250,11 +269,11 @@
         sym_layer {
             display-name = "Sym";
             bindings = <
-&none       &kp LBRC  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RBRC    &none  &none  &none  &none  &none  &none
-&kp COLON   &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp TILDE   &kp EXCL  &kp AT  &kp HASH  &kp PIPE  &none    &none  &none  &none  &none  &none  &none
-/* outer right thumb = &mo FUN: hold Sym (43) + Num-position (44) for Fun */
-&none  &kp LPAR  &kp RPAR  &kp UNDER  &mkp LCLK  &mkp RCLK  &trans  &trans  &mo FUN  &none  &mkp MCLK
+&none      &kp LBRC  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RBRC   &none   &none      &none      &none     &none     &none
+&kp COLON  &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS   &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp TILDE  &kp EXCL  &kp AT     &kp HASH   &kp PIPE   &none      &none   &none      &none      &none     &none     &none
+&none      &kp LPAR  &kp RPAR   &kp UNDER  &mkp LCLK  &mkp RCLK  &trans  &trans     &mo FUN    &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -263,10 +282,11 @@
         fun_layer {
             display-name = "Fun";
             bindings = <
-&none       &kp F12  &kp F7  &kp F8  &kp F9  &kp PSCRN    &none  &none  &none  &none  &none  &none
-&kp F11     &kp F4  &kp F5  &kp F6  &kp SLCK  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp F10     &kp F1  &kp F2  &kp F3  &kp PAUSE_BREAK  &none    &none  &none  &none  &none  &none  &none
-&none  &kp K_APP  &trans  &kp TAB  &mkp LCLK  &mkp RCLK  &trans  &trans  &trans  &none  &mkp MCLK
+&none      &kp F12    &kp F7  &kp F8   &kp F9           &kp PSCRN  &none   &none      &none      &none     &none     &none
+&kp F11    &kp F4     &kp F5  &kp F6   &kp SLCK         &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp F10    &kp F1     &kp F2  &kp F3   &kp PAUSE_BREAK  &none      &none   &none      &none      &none     &none     &none
+&none      &kp K_APP  &trans  &kp TAB  &mkp LCLK        &mkp RCLK  &trans  &trans     &trans     &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -275,13 +295,11 @@
         macro_layer {
             display-name = "Macro";
             bindings = <
-&none       &vs_cmd  &vs_save_all  &vs_term  &vs_fmt  &vs_open    &bl_render  &bl_save  &fc_sketch  &fc_pad  &none  &none
-&kp LGUI    &kp LALT  &kp LCTRL  &kp LSHFT  &none  &none    &none  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-/* clicks (30-33): pointer is always active at driver level. LCLK/RCLK here
-   duplicate the dedicated click keys (40/41 — bound on all layers since
-   A49); MB4/MB5 live only on this layer. Kept as-is (harmless, A49). */
-&none       &bt BT_CLR  &rgb_ug RGB_TOG  &none  &none  &none    &mkp LCLK  &mkp RCLK  &mkp MB4  &mkp MB5  &none  &none
-&none  &trans  &trans  &trans  &mkp LCLK  &mkp RCLK  &mo UTILITY  &trans  &trans  &none  &mkp MCLK
+&none      &vs_cmd     &vs_save_all     &vs_term   &vs_fmt    &vs_open   &bl_render   &bl_save   &fc_sketch  &fc_pad   &none     &none
+&kp LGUI   &kp LALT    &kp LCTRL        &kp LSHFT  &none      &none      &none        &kp RSHFT  &kp RCTRL   &kp RALT  &kp RGUI  &none
+&none      &bt BT_CLR  &rgb_ug RGB_TOG  &none      &none      &none      &mkp LCLK    &mkp RCLK  &mkp MB4    &mkp MB5  &none     &none
+&none      &trans      &trans           &trans     &mkp LCLK  &mkp RCLK  &mo UTILITY  &trans     &trans      &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
@@ -290,10 +308,11 @@
         utility_layer {
             display-name = "Utility";
             bindings = <
-&none       &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUI  &rgb_ug RGB_SAI  &rgb_ug RGB_BRI    &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none  &none
-&none       &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none    &kp CAPS  &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&none       &bt BT_CLR  &bt BT_CLR_ALL  &ext_power EP_TOG  &out OUT_TOG  &rgb_ug RGB_TOG    &none  &none  &none  &none  &none  &none
-&none  &trans  &trans  &kp K_APP  &mkp LCLK  &mkp RCLK  &trans  &sys_reset  &bootloader  &none  &mkp MCLK
+&none      &none         &rgb_ug RGB_EFF  &rgb_ug RGB_HUI    &rgb_ug RGB_SAI  &rgb_ug RGB_BRI  &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none     &none
+&none      &bt BT_SEL 0  &bt BT_SEL 1     &bt BT_SEL 2       &bt BT_SEL 3     &none            &kp CAPS         &kp RSHFT        &kp RCTRL        &kp RALT         &kp RGUI  &none
+&none      &bt BT_CLR    &bt BT_CLR_ALL   &ext_power EP_TOG  &out OUT_TOG     &rgb_ug RGB_TOG  &none            &none            &none            &none            &none     &none
+&none      &trans        &trans           &kp K_APP          &mkp LCLK        &mkp RCLK        &trans           &sys_reset       &bootloader      &none
+&mkp MCLK
             >;
 
             sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
