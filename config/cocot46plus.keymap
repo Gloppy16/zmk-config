@@ -231,8 +231,8 @@
             display-name = "Base";
             bindings = <
 &kp ESCAPE      &kp Q  &kp W  &kp F      &kp P      &kp B      &kp J       &kp L  &kp U      &kp Y          &kp SQT   &kp BACKSPACE
-&kp TAB         &kp A  &kp R  &kp S      &kp T      &kp G      &kp M       &kp N  &kp E      &kp I          &kp O     &kp DELETE
-&kp LEFT_SHIFT  &kp Z  &kp X  &kp C      &kp D      &kp V      &kp K       &kp H  &kp COMMA  &kp DOT        &kp FSLH  &kp RIGHT_ALT
+&kp TAB         &kp A  &kp R  &kp S      &kp T      &kp G      &kp M       &kp N  &kp E      &kp I          &kp O     &kp RIGHT_ALT
+&kp LEFT_SHIFT  &kp Z  &kp X  &kp C      &kp D      &kp V      &kp K       &kp H  &kp COMMA  &kp DOT        &kp FSLH  &kp RIGHT_SHIFT
 &kp LCTRL       &mo 3  &mo 1  &kp SPACE  &mkp LCLK  &mkp RCLK  &kp RETURN  &mo 2  &mo 4      &kp RIGHT_GUI
 &mkp MCLK
             >;
@@ -243,10 +243,10 @@
         nav_num {
             display-name = "Num";
             bindings = <
-&trans  &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp PAGE_UP    &kp N7  &kp N8        &kp N9        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
-&trans  &kp INSERT      &kp UP_ARROW     &kp LCTRL         &kp LSHFT          &kp PAGE_DOWN  &kp N4  &kp NUMBER_5  &kp NUMBER_6  &kp EQUAL             &kp BACKSLASH          &trans
-&trans  &kp LEFT_ARROW  &kp DOWN_ARROW   &kp RIGHT         &kp END            &kp HOME       &kp N1  &kp NUMBER_2  &kp N3        &kp MINUS             &kp SEMICOLON          &trans
-&none   &none           &none            &trans            &trans             &trans         &trans  &kp N0        &kp DOT       &none
+&trans  &none           &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp N7  &kp N8        &kp N9        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
+&trans  &kp PAGE_UP     &kp UP_ARROW    &kp PAGE_DOWN    &kp INS           &kp HOME           &kp N4  &kp NUMBER_5  &kp NUMBER_6  &kp EQUAL             &kp BACKSLASH          &trans
+&trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT        &kp DELETE        &kp END            &kp N1  &kp NUMBER_2  &kp N3        &kp MINUS             &kp SEMICOLON          &trans
+&trans  &none           &none           &trans           &trans            &trans             &trans  &kp N0        &kp DOT       &trans
 &trans
             >;
 
@@ -259,7 +259,7 @@
 &kp GRAVE    &kp TILDE  &kp EXCL       &kp AT_SIGN   &kp POUND      &kp DOLLAR  &kp F1  &kp F2   &kp F3   &kp F4   &kp PRINTSCREEN    &trans
 &kp PERCENT  &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp SEMICOLON  &kp COLON   &kp F5  &kp F6   &kp F7   &kp F8   &kp C_VOLUME_UP    &trans
 &kp MINUS    &kp PLUS   &kp EQUAL      &kp UNDER     &kp BACKSLASH  &kp PIPE    &kp F9  &kp F10  &kp F11  &kp F12  &kp C_VOLUME_DOWN  &trans
-&none        &none      &none          &trans        &trans         &trans      &trans  &none    &none    &none
+&trans       &none      &none          &trans        &trans         &trans      &trans  &none    &none    &trans
 &trans
             >;
 
