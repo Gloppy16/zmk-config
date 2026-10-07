@@ -18,18 +18,14 @@
 #     artifact-name: corne_left_with_studio
 #
 ---
+# System_Reset branch: builds ONLY the settings_reset wipe firmware
+# (https://zmk.dev/docs/config/settings). Flash the resulting UF2 once to erase
+# all persistent settings (BLE bonds, Studio keymap NVS, output selection,
+# RGB), then re-flash the normal firmware built from main. Keep this entry
+# BARE - no snippet/cmake-args: the A45 Studio flags (-DCONFIG_ZMK_STUDIO=y)
+# trip the physical_layouts.c static assert on this shield (it has no
+# zmk,physical_layout node; Attempt 50 CI failure). The normal keyboard build
+# lives on main's build.yaml, not here.
 include:
   - board: nice_nano_v2
-    shield: cocot64_plus
-  - board: nice_nano_v2
     shield: settings_reset
-    # Attempt 45: ZMK Studio RPC endpoint (CDC ACM #2, chosen
-    # zmk,studio-rpc-uart) + CONFIG_ZMK_STUDIO=y. Attempt 34's logging console
-    # is KEPT: the two snippets touch disjoint chosen properties
-    # (zephyr,console vs zmk,studio-rpc-uart) and create SEPARATE CDC nodes
-    # under zephyr_udc0 (verified vs v0.3.0 app/snippets/), so picocom bench
-    # logging survives. Both names ride the workflow's single -S arg; west
-    # -S is action=append and Zephyr 3.5 snippets.cmake splits SNIPPET on
-    # spaces, so the space-separated string yields both snippets.
-    snippet: studio-rpc-usb-uart zmk-usb-logging
-    cmake-args: -DCONFIG_ZMK_STUDIO=y
