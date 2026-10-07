@@ -243,10 +243,10 @@
         nav_num {
             display-name = "Num";
             bindings = <
-&trans  &none           &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp N7  &kp N8        &kp N9        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
-&trans  &kp PAGE_UP     &kp UP_ARROW    &kp PAGE_DOWN    &kp INS           &kp HOME           &kp N4  &kp NUMBER_5  &kp NUMBER_6  &kp EQUAL             &kp BACKSLASH          &trans
-&trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT        &kp DELETE        &kp END            &kp N1  &kp NUMBER_2  &kp N3        &kp MINUS             &kp SEMICOLON          &trans
-&trans  &none           &none           &trans           &trans            &trans             &trans  &kp N0        &kp DOT       &trans
+&trans  &kp PAUSE_BREAK  &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp N7  &kp N8        &kp N9        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans
+&trans  &kp PAGE_UP      &kp UP_ARROW    &kp PAGE_DOWN    &kp INS           &kp HOME           &kp N4  &kp NUMBER_5  &kp NUMBER_6  &kp EQUAL             &kp BACKSLASH          &trans
+&trans  &kp LEFT_ARROW   &kp DOWN_ARROW  &kp RIGHT        &kp DELETE        &kp END            &kp N1  &kp NUMBER_2  &kp N3        &kp MINUS             &kp SEMICOLON          &trans
+&trans  &none            &none           &trans           &trans            &trans             &trans  &kp N0        &kp DOT       &trans
 &trans
             >;
 
