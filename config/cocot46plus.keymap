@@ -230,23 +230,10 @@
         base_layer {
             display-name = "Base";
             bindings = <
-&kp GRAVE  &kp Q        &kp W        &kp F         &kp P         &kp B      &kp J    &kp L         &kp U         &kp Y        &kp SQT      &kp BACKSPACE
-&kp ESC    &hml LGUI A  &hml LALT R  &hml LCTRL S  &hml LSHFT T  &kp G      &kp M    &hmr LSHFT N  &hmr LCTRL E  &hmr LALT I  &hmr LGUI O  &kp DEL
-&kp TAB    &kp Z        &kp X        &kp C         &kp D         &kp V      &kp K    &kp H         &kp COMMA     &kp DOT      &kp FSLH     &none
-&none      &mo MACRO    &mo NAV      &kp SPACE     &mkp LCLK     &mkp RCLK  &kp RET  &mo SYM       &mo NUM       &none
-&mkp MCLK
-            >;
-
-            sensor-bindings = <&enc_scrl SCRL_UP SCRL_DOWN>;
-        };
-
-        nav_layer {
-            display-name = "Nav";
-            bindings = <
-&none      &none     &none      &none      &none      &none      &kp K_AGAIN  &kp K_PASTE  &kp K_COPY  &kp K_CUT  &kp K_UNDO  &none
-&kp LGUI   &kp LALT  &kp LCTRL  &kp LSHFT  &none      &none      &caps_word   &kp LEFT     &kp DOWN    &kp UP     &kp RIGHT   &kp RALT
-&none      &none     &kp LALT   &kp LCTRL  &kp LSHFT  &none      &none        &kp INS      &kp HOME    &kp PG_DN  &kp PG_UP   &kp END
-&none      &trans    &trans     &kp RET    &mkp LCLK  &mkp RCLK  &kp BSPC     &kp DEL      &kp TAB     &none
+&kp TAB         &kp Q  &kp W        &kp F         &kp P         &kp B      &kp J    &kp L         &kp U         &kp Y        &kp SQT   &kp BACKSPACE
+&none           &kp A  &hml LALT R  &hml LCTRL S  &hml LSHFT T  &kp G      &kp M    &hmr LSHFT N  &hmr LCTRL E  &hmr LALT I  &kp O     &kp DEL
+&kp LEFT_SHIFT  &kp Z  &kp X        &kp C         &kp D         &kp V      &kp K    &kp H         &kp COMMA     &kp DOT      &kp FSLH  &kp RIGHT_WIN
+&mo 5           &mo 3  &mo 1        &kp SPACE     &mkp LCLK     &mkp RCLK  &kp RET  &mo 2         &mo 4         &none
 &mkp MCLK
             >;
 
@@ -256,10 +243,10 @@
         num_layer {
             display-name = "Num";
             bindings = <
-&none      &kp LBKT  &kp N7  &kp N8     &kp N9     &kp RBKT   &none   &none      &none      &none     &none     &none
-&kp SEMI   &kp N4    &kp N5  &kp N6     &kp EQUAL  &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp GRAVE  &kp N1    &kp N2  &kp N3     &kp BSLH   &none      &none   &none      &none      &none     &none     &none
-&none      &kp DOT   &kp N0  &kp MINUS  &mkp LCLK  &mkp RCLK  &trans  &trans     &trans     &none
+&trans     &kp GRAVE       &none           &none      &kp INS    &kp HOME       &kp N7  &kp N8               &kp N9               &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans
+&trans     &none           &kp UP_ARROW    &kp LCTRL  &kp LSHFT  &kp PAGE_UP    &kp N4  &hml RIGHT_SHIFT N5  &hml RCTRL NUMBER_6  &hml RALT EQUAL   &kp BACKSLASH      &trans
+&trans     &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT  &kp END    &kp PAGE_DOWN  &kp N1  &kp NUMBER_2         &kp N3               &kp MINUS         &kp SEMICOLON      &trans
+&none      &none           &none           &none      &trans     &trans         &trans  &kp N0               &kp DOT              &none
 &mkp MCLK
             >;
 
@@ -269,10 +256,10 @@
         sym_layer {
             display-name = "Sym";
             bindings = <
-&none      &kp LBRC  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RBRC   &none   &none      &none      &none     &none     &none
-&kp COLON  &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS   &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
-&kp TILDE  &kp EXCL  &kp AT     &kp HASH   &kp PIPE   &none      &none   &none      &none      &none     &none     &none
-&none      &kp LPAR  &kp RPAR   &kp UNDER  &mkp LCLK  &mkp RCLK  &trans  &trans     &mo FUN    &none
+&none      &kp LBRC  &kp AMPS   &kp ASTRK  &kp LPAR  &kp RBRC  &none   &none      &none      &none     &none     &none
+&kp COLON  &kp DLLR  &kp PRCNT  &kp CARET  &kp PLUS  &none     &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
+&kp TILDE  &kp EXCL  &kp AT     &kp HASH   &kp PIPE  &none     &none   &none      &none      &none     &none     &none
+&none      &kp LPAR  &kp RPAR   &kp UNDER  &trans    &trans    &trans  &trans     &mo 3      &none
 &mkp MCLK
             >;
 
@@ -285,7 +272,7 @@
 &none      &kp F12    &kp F7  &kp F8   &kp F9           &kp PSCRN  &none   &none      &none      &none     &none     &none
 &kp F11    &kp F4     &kp F5  &kp F6   &kp SLCK         &none      &none   &kp RSHFT  &kp RCTRL  &kp RALT  &kp RGUI  &none
 &kp F10    &kp F1     &kp F2  &kp F3   &kp PAUSE_BREAK  &none      &none   &none      &none      &none     &none     &none
-&none      &kp K_APP  &trans  &kp TAB  &mkp LCLK        &mkp RCLK  &trans  &trans     &trans     &none
+&none      &kp K_APP  &trans  &kp TAB  &trans           &trans     &trans  &trans     &trans     &none
 &mkp MCLK
             >;
 
@@ -295,10 +282,10 @@
         macro_layer {
             display-name = "Macro";
             bindings = <
-&none      &vs_cmd     &vs_save_all     &vs_term   &vs_fmt    &vs_open   &bl_render   &bl_save   &fc_sketch  &fc_pad   &none     &none
-&kp LGUI   &kp LALT    &kp LCTRL        &kp LSHFT  &none      &none      &none        &kp RSHFT  &kp RCTRL   &kp RALT  &kp RGUI  &none
-&none      &bt BT_CLR  &rgb_ug RGB_TOG  &none      &none      &none      &mkp LCLK    &mkp RCLK  &mkp MB4    &mkp MB5  &none     &none
-&none      &trans      &trans           &trans     &mkp LCLK  &mkp RCLK  &mo UTILITY  &trans     &trans      &none
+&none      &vs_cmd     &vs_save_all     &vs_term   &vs_fmt  &vs_open  &bl_render  &bl_save   &fc_sketch  &fc_pad   &none     &none
+&kp LGUI   &kp LALT    &kp LCTRL        &kp LSHFT  &none    &none     &none       &kp RSHFT  &kp RCTRL   &kp RALT  &kp RGUI  &none
+&none      &bt BT_CLR  &rgb_ug RGB_TOG  &none      &none    &none     &mkp LCLK   &mkp RCLK  &mkp MB4    &mkp MB5  &none     &none
+&none      &trans      &trans           &trans     &trans   &trans    &mo 5       &trans     &trans      &none
 &mkp MCLK
             >;
 
@@ -311,7 +298,7 @@
 &none      &none         &rgb_ug RGB_EFF  &rgb_ug RGB_HUI    &rgb_ug RGB_SAI  &rgb_ug RGB_BRI  &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &none     &none
 &none      &bt BT_SEL 0  &bt BT_SEL 1     &bt BT_SEL 2       &bt BT_SEL 3     &none            &kp CAPS         &kp RSHFT        &kp RCTRL        &kp RALT         &kp RGUI  &none
 &none      &bt BT_CLR    &bt BT_CLR_ALL   &ext_power EP_TOG  &out OUT_TOG     &rgb_ug RGB_TOG  &none            &none            &none            &none            &none     &none
-&none      &trans        &trans           &kp K_APP          &mkp LCLK        &mkp RCLK        &trans           &sys_reset       &bootloader      &none
+&none      &trans        &trans           &kp K_APP          &trans           &trans           &trans           &sys_reset       &bootloader      &none
 &mkp MCLK
             >;
 
