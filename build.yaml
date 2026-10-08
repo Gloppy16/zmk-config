@@ -19,7 +19,7 @@
 #
 ---
 include:
-  - board: nice_nano
+  - board: nice_nano_v2
     shield: cocot46plus
     # Attempt 45: ZMK Studio RPC endpoint (CDC ACM #2, chosen
     # zmk,studio-rpc-uart) + CONFIG_ZMK_STUDIO=y. Attempt 34's logging console
