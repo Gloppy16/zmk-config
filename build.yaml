@@ -19,7 +19,12 @@
 #
 ---
 include:
-  - board: nice_nano_v2
+  # Attempt 54: board ID migrated for Zephyr 4.1/ZMK main - nice_nano_v2 no
+  # longer exists (boards collapsed to board+revisions, new ID format
+  # <board>@<rev>/<soc>/<variant>). nice_nano//zmk = nice_nano default rev
+  # 2.0.0 (= our v2) + the mandatory /zmk variant. Artifact name becomes
+  # cocot46plus-nice_nano_zmk-zmk.uf2 (slashes -> underscores).
+  - board: nice_nano//zmk
     shield: cocot46plus
     # Attempt 45: ZMK Studio RPC endpoint (CDC ACM #2, chosen
     # zmk,studio-rpc-uart) + CONFIG_ZMK_STUDIO=y. Attempt 34's logging console
