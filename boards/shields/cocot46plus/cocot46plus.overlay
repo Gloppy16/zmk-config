@@ -194,29 +194,6 @@
         zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
     };
-
-    /* Attempt 54: EXT_POWER node - the new ZMK main nice_nano board dts no
-       longer defines it (old v0.3.0 board did). Our Utility layer binds
-       &ext_power EP_TOG, and the ADNS-5050 driver re-asserts this rail via
-       vcc-gpios (P0.13), so the node must exist. Shape mirrors the old
-       board's node and main's mikoto board (label EXT_POWER preserves user
-       settings; P0.13 = the switched VCC rail, init-delay 50ms per old
-       nice_nano_v2.dts). */
-    EXT_POWER {
-        compatible = "zmk,ext-power-generic";
-        control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-        init-delay-ms = <50>;
-    };
-};
-
-/* Attempt 54: NFC pins as GPIO - required on Zephyr 4.1/ZMK main. The old
-   CONFIG_NFCT_PINS_AS_GPIOS Kconfig symbol is GONE (Zephyr defaulted it on
-   at runtime; 4.1 moved the mechanism to devicetree). Our underglow data
-   pin (P0.09, A49) and trackball SCLK (P0.10, A34) ARE the nRF52840 NFC
-   pair - without this, both are dead. Blog 2025-12-09 zephyr-4-1,
-   "nRF52840 NFC Pins as GPIO". */
-&uicr {
-    nfct-pins-as-gpios;
 };
 
 /* 12x SK6812MINI-E chain on P0.09 (Attempt 49). Bench-confirmed by Agen:
