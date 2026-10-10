@@ -3,4 +3,11 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0
+    # Attempt 52: bumped in lockstep with west.yml zmk pin (4dd95d7840eb...,
+    # main HEAD 2026-10-09). v0.3.0 workflow + main ZMK = checkout@v4/cache@v4
+    # deprecation noise and no main-pin warning; the reusable workflow is
+    # version-agnostic (reads our build.yaml + config/).
+    # Attempt 53: 12-char SHA failed workflow resolution (run 38034236274:
+    # failure in 3s, zero jobs created) - reusable-workflow uses: refs need
+    # the FULL 40-char SHA.
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85
