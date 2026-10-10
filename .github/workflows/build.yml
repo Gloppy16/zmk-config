@@ -3,4 +3,8 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0
+    # Attempt 52: bumped in lockstep with west.yml zmk pin (4dd95d7840eb,
+    # main HEAD 2026-10-09). v0.3.0 workflow + main ZMK = checkout@v4/cache@v4
+    # deprecation noise and no main-pin warning; the reusable workflow is
+    # version-agnostic (reads our build.yaml + config/).
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@4dd95d7840eb

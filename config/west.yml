@@ -9,7 +9,15 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: v0.3.0
+      # Attempt 52: BLE pairing fix — bump v0.3.0 -> main HEAD 4dd95d7840eb
+      # (2026-10-09). Pulls Zephyr v4.1.0+zmk-fixes with the BLE controller
+      # fix wave (LLCP/radio-scheduling/DLE fixes post-v3.5). btmon-proven
+      # root cause: keyboard controller dies mid-SC-pairing (0x08 supervision
+      # timeout ~440ms after pubkey TX) on v3.5.0+zmk-fixes. No stable tag
+      # newer than v0.3.0 exists (v0.3.0 is newest, 2025-08-01), so we pin
+      # main HEAD. .github/workflows/build.yml is bumped to the same SHA in
+      # lockstep.
+      revision: 4dd95d7840eb
       import: app/west.yml
     - name: zmk-duplex-matrix-driver
       remote: maaao
