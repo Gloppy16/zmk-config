@@ -291,6 +291,21 @@
     oled: ssd1306@3c {
         compatible = "sinowealth,sh1106";
         reg = <0x3c>;
+        /* Attempt 69: ready-time-ms 10->2000. A68 (page-mode writes @ 0x3c)
+           WEDGED: 0 bytes with DTR pre-asserted = CPU died before the log
+           thread's first drain (~0.4s). Combined evidence: init COMMANDS
+           (short writes) are fine in both addressing modes; any display
+           DATA write (513B horizontal burst A60-A63, or 128B page writes
+           A68) kills the CPU. Leading hypothesis: rail sag/brown-out at
+           display-ON current step (panel rides the switched P0.13 rail;
+           adns driver asserts it at ~1.11s while ssd1306 device init fires
+           ~1.10s — a race). ready_time is an ABSOLUTE boot-time deadline
+           (log-verified: 10ms showed as expired-negative at 1.1s), so 2000
+           puts display init AFTER the rail assert + 2s panel settle. If the
+           wedge is rail sag, this fixes it; if not, the wedge moves to a
+           deterministic ~2s timestamp (currently race-masked) — also
+           diagnostic. */
+        ready-time-ms = <2000>;
         width = <128>;
         height = <32>;
         segment-offset = <0>;
