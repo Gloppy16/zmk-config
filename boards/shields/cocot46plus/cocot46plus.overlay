@@ -273,23 +273,24 @@
 &i2c0 {
     status = "okay";
 
-/* Attempt 66: compatible sinowealth,sh1106 — THE FIX CANDIDATE. Evidence:
+/* Attempt 66/68: compatible sinowealth,sh1106 — page-mode writes. Evidence:
    (1) A63 capture: display init ACKs at 2.17s (behind the trackball's 1.8s
    blocking init on the sysworkq) and the workqueue/CPU wedges — panel shows
    static bits (init reached display-on, garbage RAM). (2) A64 (dedicated
    display queue): wedge moved EARLIER (~0.4s, 0 bytes) — display path is
    CPU-fatal regardless of queue. (3) A65 (address 0x3D discriminator):
-   NACK path = fully working keyboard (2.1MB log, adns ready, no
+   NACK path = fully working keyboard (25.6MB log, adns ready, no
    disconnects); ACK path = CPU death. (4) Zephyr v4.1.0 ssd1306.c: SSD1306
    mode sends the whole framebuffer as ONE 513-byte i2c burst with
-   horizontal memory addressing — SH1106-class controllers don't implement
-   it and hang the bus; sh1106_compatible mode uses page addressing (4x
-   128-byte page writes) which works on both. ZMK pin uses this driver.
-   0.91" 128x32 white modules are SH1106-class. Panel content frozen =
-   half-initialized controller RAM. */
+   horizontal memory addressing; sh1106_compatible mode uses page addressing
+   (4x 128-byte page writes) — no long burst, which is what wedges the
+   TWIM/CPU. A66/A67 NOTE: my commit forgot to revert reg from A65's 0x3d
+   discriminator, so those runs probed the EMPTY 0x3D address (instant
+   NACK, clean init failure, board alive) — sh1106 page mode was never
+   tested against the panel. A68 fixes reg to 0x3c. */
     oled: ssd1306@3c {
         compatible = "sinowealth,sh1106";
-        reg = <0x3d>;
+        reg = <0x3c>;
         width = <128>;
         height = <32>;
         segment-offset = <0>;
