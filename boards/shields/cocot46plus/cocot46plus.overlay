@@ -273,17 +273,22 @@
 &i2c0 {
     status = "okay";
 
-/* Attempt 65: discriminator — address 0x3C->0x3D so the probe NACKs and the
-   ACK path never runs. A64 datum: 0 bytes on the wire (A63, identical except
-   the dedicated queue, streamed 7.4 KB from 0.377s) — with display init
-   unblocked it runs at ~0.4s and wedges the WHOLE CPU before the log
-   thread's first drain. Panel static-bits = init reached display-on,
-   garbage RAM shown forever. Conclusion: display ACK path (init/first-flush
-   on the working routing) is CPU-fatal; NACK path (A58/A59) is proven
-   safe. 0x3D = control experiment + restores a usable keyboard. Revert to
-   0x3C after the real fix. */
-    oled: ssd1306@3d {
-        compatible = "solomon,ssd1306fb";
+/* Attempt 66: compatible sinowealth,sh1106 — THE FIX CANDIDATE. Evidence:
+   (1) A63 capture: display init ACKs at 2.17s (behind the trackball's 1.8s
+   blocking init on the sysworkq) and the workqueue/CPU wedges — panel shows
+   static bits (init reached display-on, garbage RAM). (2) A64 (dedicated
+   display queue): wedge moved EARLIER (~0.4s, 0 bytes) — display path is
+   CPU-fatal regardless of queue. (3) A65 (address 0x3D discriminator):
+   NACK path = fully working keyboard (2.1MB log, adns ready, no
+   disconnects); ACK path = CPU death. (4) Zephyr v4.1.0 ssd1306.c: SSD1306
+   mode sends the whole framebuffer as ONE 513-byte i2c burst with
+   horizontal memory addressing — SH1106-class controllers don't implement
+   it and hang the bus; sh1106_compatible mode uses page addressing (4x
+   128-byte page writes) which works on both. ZMK pin uses this driver.
+   0.91" 128x32 white modules are SH1106-class. Panel content frozen =
+   half-initialized controller RAM. */
+    oled: ssd1306@3c {
+        compatible = "sinowealth,sh1106";
         reg = <0x3d>;
         width = <128>;
         height = <32>;
