@@ -273,9 +273,18 @@
 &i2c0 {
     status = "okay";
 
-    oled: ssd1306@3c {
+/* Attempt 65: discriminator — address 0x3C->0x3D so the probe NACKs and the
+   ACK path never runs. A64 datum: 0 bytes on the wire (A63, identical except
+   the dedicated queue, streamed 7.4 KB from 0.377s) — with display init
+   unblocked it runs at ~0.4s and wedges the WHOLE CPU before the log
+   thread's first drain. Panel static-bits = init reached display-on,
+   garbage RAM shown forever. Conclusion: display ACK path (init/first-flush
+   on the working routing) is CPU-fatal; NACK path (A58/A59) is proven
+   safe. 0x3D = control experiment + restores a usable keyboard. Revert to
+   0x3C after the real fix. */
+    oled: ssd1306@3d {
         compatible = "solomon,ssd1306fb";
-        reg = <0x3c>;
+        reg = <0x3d>;
         width = <128>;
         height = <32>;
         segment-offset = <0>;
