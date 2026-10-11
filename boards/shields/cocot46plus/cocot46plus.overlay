@@ -41,15 +41,17 @@
     };
 
     /* EC12-compatible encoder, QMK pins D3/D2 (aki27kbd fork keyboard.json:
-       pin_a D3, pin_b D2). D3 = pro_micro 3 = P0.20, D2 = pro_micro 2 =
-       P0.17. NOTE: D1/D0 (pro_micro 1/0 = P0.06/P0.08) are the OLED I2C
-       pads (SDA/SCL) and must NOT be used here - Attempts <=33 wired the
-       encoder onto the I2C pins, colliding with the i2c0 re-route below. */
+       pin_a D3, pin_b D2). Those are AVR PORT names, NOT Pro Micro silk
+       numbers: PD3/PD2 physically sit on pads silked 1/0 (PCB nets en_A/
+       en_B). pro_micro index = silk number, so a/b = pro_micro 1/0.
+       NOTE: pads silked 2/3 (PD1/PD0 = the OLED SDA/SCL nets) are the I2C
+       pads and must NOT be used here - Attempts 34-59 wired the encoder
+       onto the I2C pads, colliding with i2c0 below. */
     encoder_0: encoder_0 {
         compatible = "alps,ec11";
         resolution = <4>;
-        a-gpios = <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D3 */
-        b-gpios = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* D2 */
+        a-gpios = <&pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* PD3 = TX0 pad = en_A */
+        b-gpios = <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  /* PD2 = RX1 pad = en_B */
     };
 
     /* ADNS-5050 trackball sensor, bit-banged 3-wire (Attempt 34 pin
@@ -271,9 +273,9 @@
 &i2c0 {
     status = "okay";
 
-    oled: ssd1306@3d {
+    oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
-        reg = <0x3d>;
+        reg = <0x3c>;
         width = <128>;
         height = <32>;
         segment-offset = <0>;
@@ -288,26 +290,27 @@
     };
 };
 
-/* OLED rides the Pro Micro I2C header pads: AVR TWI = silk D1/D0
-   (SDA=D1=P0.06, SCL=D0=P0.08), confirmed by SparkFun Pro Micro RP2040
-   (I2C1 on GP2/GP3 = the same D1/D0 pads) carrying upstream cocot46plus
-   OLED on I2C1. The BOARD-default i2c0 pinctrl is P0.17/P0.20 = silk
-   D2/D3 = the ENCODER pins (fixed to 3/2 this attempt), so this re-route
-   is REQUIRED and correct as-is. Node merge overrides only psels, same
-   mechanism the spi3 block above uses. */
+/* OLED rides the Pro Micro I2C header pads: pads silked 2/3 are the pads
+   the Pro Micro itself labels SDA/SCL (AVR TWI = PD1/PD0 = PCB nets
+   SDA/SCL = the OLED module), confirmed by SparkFun Pro Micro RP2040
+   (I2C1 on GP2/GP3 = the same pads) carrying upstream cocot46plus OLED
+   on I2C1. The BOARD-default i2c0 pinctrl is already P0.17/P0.20 = the
+   correct routing; this override now exists ONLY to add bias-pull-up
+   (module/PCB external pull-ups unconfirmed). Node merge overrides only
+   psels, same mechanism the spi3 block above uses. */
 &pinctrl {
     i2c0_default: i2c0_default {
         group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
-                <NRF_PSEL(TWIM_SCL, 0, 8)>;
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
             bias-pull-up;
         };
     };
 
     i2c0_sleep: i2c0_sleep {
         group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 6)>,
-                <NRF_PSEL(TWIM_SCL, 0, 8)>;
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
             low-power-enable;
             bias-pull-up;
         };
