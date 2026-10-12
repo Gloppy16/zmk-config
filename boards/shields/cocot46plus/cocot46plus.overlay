@@ -256,12 +256,17 @@
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */
-        spi-max-frequency = <4000000>;
+        /* LED timing fix: 8 MHz -> 125 ns bit period.
+         * SK6812 windows: T1H [0.54,0.66]us, T0H [0.15,0.45]us.
+         * T1H = 5x125ns = 625ns (0xF8); T0H = 2x125ns = 250ns (0x20).
+         * reset-delay >= 80us low latch (binding default is only 8us). */
+        spi-max-frequency = <8000000>;
 
         /* WS2812 */
         chain-length = <12>; /* 12x SK6812MINI-E */
-        spi-one-frame = <0x70>;
-        spi-zero-frame = <0x40>;
+        spi-one-frame = <0xF8>;
+        spi-zero-frame = <0x20>;
+        reset-delay = <80>;
 
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
