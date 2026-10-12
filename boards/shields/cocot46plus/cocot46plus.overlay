@@ -192,7 +192,7 @@
     };
 
     chosen {
-        zephyr,display = &oled;
+        zephyr,display = &oled; /* disabled node — see strip-display note above */
         zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
     };
@@ -268,44 +268,22 @@
 };
 
 /* OLED (128x32 SSD1306 on the Pro Micro I2C pins, enabled Attempt 30).
-   Node shape mirrors ZMK v0.3.0's corne.dtsi; the binding requires
-   segment-offset / page-offset / display-offset / multiplex-ratio. */
+   strip-display (mission 2026-10-12): NODE DISABLED — LOAD-BEARING. With the
+   node disabled, devicetree never instantiates the ssd1306/sh1106 device, so
+   the boot-time i2c probe of reg 0x3c never runs = the ACK-path wedge
+   trigger is dead. ZMK_DISPLAY=n alone would NOT kill the probe (driver init
+   is devicetree-driven). Kept for reference; re-enable by flipping status +
+   ZMK_DISPLAY=y. */
 &i2c0 {
     status = "okay";
 
-/* Attempt 66/68: compatible sinowealth,sh1106 — page-mode writes. Evidence:
-   (1) A63 capture: display init ACKs at 2.17s (behind the trackball's 1.8s
-   blocking init on the sysworkq) and the workqueue/CPU wedges — panel shows
-   static bits (init reached display-on, garbage RAM). (2) A64 (dedicated
-   display queue): wedge moved EARLIER (~0.4s, 0 bytes) — display path is
-   CPU-fatal regardless of queue. (3) A65 (address 0x3D discriminator):
-   NACK path = fully working keyboard (25.6MB log, adns ready, no
-   disconnects); ACK path = CPU death. (4) Zephyr v4.1.0 ssd1306.c: SSD1306
-   mode sends the whole framebuffer as ONE 513-byte i2c burst with
-   horizontal memory addressing; sh1106_compatible mode uses page addressing
-   (4x 128-byte page writes) — no long burst, which is what wedges the
-   TWIM/CPU. A66/A67 NOTE: my commit forgot to revert reg from A65's 0x3d
-   discriminator, so those runs probed the EMPTY 0x3D address (instant
-   NACK, clean init failure, board alive) — sh1106 page mode was never
-   tested against the panel. A68 fixes reg to 0x3c. */
+/* Attempt 66/68 evidence chain preserved in git history (A60-A70 wedge
+   hunt). strip-display: node is disabled, reg 0x3c probe never runs. */
     oled: ssd1306@3c {
         compatible = "sinowealth,sh1106";
         reg = <0x3c>;
-        /* Attempt 69: ready-time-ms 10->2000. A68 (page-mode writes @ 0x3c)
-           WEDGED: 0 bytes with DTR pre-asserted = CPU died before the log
-           thread's first drain (~0.4s). Combined evidence: init COMMANDS
-           (short writes) are fine in both addressing modes; any display
-           DATA write (513B horizontal burst A60-A63, or 128B page writes
-           A68) kills the CPU. Leading hypothesis: rail sag/brown-out at
-           display-ON current step (panel rides the switched P0.13 rail;
-           adns driver asserts it at ~1.11s while ssd1306 device init fires
-           ~1.10s — a race). ready_time is an ABSOLUTE boot-time deadline
-           (log-verified: 10ms showed as expired-negative at 1.1s), so 2000
-           puts display init AFTER the rail assert + 2s panel settle. If the
-           wedge is rail sag, this fixes it; if not, the wedge moves to a
-           deterministic ~2s timestamp (currently race-masked) — also
-           diagnostic. */
-        ready-time-ms = <2000>;
+        status = "disabled"; /* LOAD-BEARING: kills the boot-time i2c probe = the ACK path */
+        ready-time-ms = <2000>; /* Attempt 69 value, kept for re-enable */
         width = <128>;
         height = <32>;
         segment-offset = <0>;
