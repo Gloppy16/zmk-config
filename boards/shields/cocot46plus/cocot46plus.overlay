@@ -256,11 +256,13 @@
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */
-        /* LED timing fix: 8 MHz -> 125 ns bit period.
+        /* led-800khz (mission 2026-10-12): ONE change from e9e993f —
+         * spi-max-frequency 8000000 -> 800000 (800 kHz = 1250 ns bit period).
          * SK6812 windows: T1H [0.54,0.66]us, T0H [0.15,0.45]us.
-         * T1H = 5x125ns = 625ns (0xF8); T0H = 2x125ns = 250ns (0x20).
-         * reset-delay >= 80us low latch (binding default is only 8us). */
-        spi-max-frequency = <8000000>;
+         * T1H = 5x1250ns = 6.25us (0xF8); T0H = 2x1250ns = 2.5us (0x20)
+         * — both ~10x ABOVE window = invalid, but Agen-ordered empirical
+         * test: does the panel light at the legacy WS2812-classic bit rate? */
+        spi-max-frequency = <800000>;
 
         /* WS2812 */
         chain-length = <12>; /* 12x SK6812MINI-E */
